@@ -3,8 +3,13 @@ import java.util.Scanner;
 public class Duke {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+        // Initialize the tasks array
+        String[] tasks = new String[100];
+        int taskCount = 0;
+
         // Display initial greeting
-        System.out.println("c____________________________________________________________");
+        System.out.println("____________________________________________________________");
         System.out.println("Hello! I'm Mimon");
         System.out.println("What can I do for you?");
         System.out.println("____________________________________________________________");
@@ -22,9 +27,27 @@ public class Duke {
                 break;
             }
 
-            // Echo the user input
+            // If user types "list", display all tasks
+            if (userInput.equalsIgnoreCase("list")) {
+                System.out.println("____________________________________________________________");
+                if (taskCount == 0) {
+                    System.out.println("No tasks added yet.");
+                } else {
+                    for (int i = 0; i < taskCount; i++) {
+                        System.out.println((i + 1) + ". " + tasks[i]);
+                    }
+                }
+                System.out.println("____________________________________________________________");
+                continue;
+            }
+
+            // Add the input to the tasks array
+            tasks[taskCount] = userInput;
+            taskCount++;
+
+            // Echo the input with confirmation
             System.out.println("____________________________________________________________");
-            System.out.println(userInput);
+            System.out.println("added: " + userInput);
             System.out.println("____________________________________________________________");
         }
     }

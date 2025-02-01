@@ -7,7 +7,7 @@ public class Duke {
         // Initialize the task list
         Task[] tasks = new Task[100];
         int taskCount = 0;
-
+        
         // Display initial greeting
         System.out.println("____________________________________________________________");
         System.out.println("Hello! I'm Mimon");

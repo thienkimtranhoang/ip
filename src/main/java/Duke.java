@@ -5,8 +5,7 @@ public class Duke {
         Scanner scanner = new Scanner(System.in);
 
         // Initialize the task list
-        String[] tasks = new String[100];  // Store task descriptions
-        boolean[] isDone = new boolean[100]; // Track completion status
+        Task[] tasks = new Task[100];
         int taskCount = 0;
 
         // Display initial greeting
@@ -18,7 +17,7 @@ public class Duke {
         // Loop to handle user input
         while (true) {
             // Read user input
-            String userInput = scanner.nextLine().trim();
+            String userInput = scanner.nextLine();
 
             // If user types "bye", exit the loop
             if (userInput.equalsIgnoreCase("bye")) {
@@ -36,8 +35,7 @@ public class Duke {
                     System.out.println("No tasks added yet.");
                 } else {
                     for (int i = 0; i < taskCount; i++) {
-                        String status = isDone[i] ? "[X]" : "[ ]";
-                        System.out.println((i + 1) + ". " + status + " " + tasks[i]);
+                        System.out.println((i + 1) + ". " + tasks[i]);
                     }
                 }
                 System.out.println("____________________________________________________________");
@@ -46,50 +44,37 @@ public class Duke {
 
             // If user types "mark", mark the task as done
             if (userInput.startsWith("mark ")) {
-                try {
-                    int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
-                    if (taskIndex >= 0 && taskIndex < taskCount) {
-                        isDone[taskIndex] = true;
-                        System.out.println("____________________________________________________________");
-                        System.out.println("Nice! I've marked this task as done:");
-                        System.out.println("  [X] " + tasks[taskIndex]);
-                        System.out.println("____________________________________________________________");
-                    } else {
-                        System.out.println("Invalid task number.");
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Please enter a valid task number.");
+                int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
+                if (taskIndex >= 0 && taskIndex < taskCount) {
+                    tasks[taskIndex].markAsDone();
+                    System.out.println("____________________________________________________________");
+                    System.out.println("Nice! I've marked this task as done:");
+                    System.out.println("  " + tasks[taskIndex]);
+                    System.out.println("____________________________________________________________");
                 }
                 continue;
             }
 
             // If user types "unmark", mark the task as not done
             if (userInput.startsWith("unmark ")) {
-                try {
-                    int taskIndex = Integer.parseInt(userInput.substring(7)) - 1;
-                    if (taskIndex >= 0 && taskIndex < taskCount) {
-                        isDone[taskIndex] = false;
-                        System.out.println("____________________________________________________________");
-                        System.out.println("OK, I've marked this task as not done yet:");
-                        System.out.println("  [ ] " + tasks[taskIndex]);
-                        System.out.println("____________________________________________________________");
-                    } else {
-                        System.out.println("Invalid task number.");
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Please enter a valid task number.");
+                int taskIndex = Integer.parseInt(userInput.substring(7)) - 1;  // Fixed substring index
+                if (taskIndex >= 0 && taskIndex < taskCount) {
+                    tasks[taskIndex].markAsNotDone();
+                    System.out.println("____________________________________________________________");
+                    System.out.println("OK, I've marked this task as not done yet:");
+                    System.out.println("  " + tasks[taskIndex]);
+                    System.out.println("____________________________________________________________");
                 }
                 continue;
             }
 
             // Add the task to the list
-            tasks[taskCount] = userInput;
-            isDone[taskCount] = false; // New tasks are not done by default
+            tasks[taskCount] = new Task(userInput);
             taskCount++;
 
             // Echo the input with confirmation
             System.out.println("____________________________________________________________");
-            System.out.println("Added: " + userInput);
+            System.out.println("added: " + userInput);
             System.out.println("____________________________________________________________");
         }
     }

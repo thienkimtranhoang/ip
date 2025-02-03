@@ -1,25 +1,19 @@
 import java.util.Scanner;
 
-public class Duke {
+public class Mimon {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
-        // Initialize the task list
         Task[] tasks = new Task[100];
         int taskCount = 0;
 
-        // Display initial greeting
         System.out.println("____________________________________________________________");
         System.out.println("Hello! I'm Mimon");
         System.out.println("What can I do for you?");
         System.out.println("____________________________________________________________");
 
-        // Loop to handle user input
         while (true) {
-            // Read user input
             String userInput = scanner.nextLine();
 
-            // If user types "bye", exit the loop
             if (userInput.equalsIgnoreCase("bye")) {
                 System.out.println("____________________________________________________________");
                 System.out.println("Bye. Hope to see you again soon!");
@@ -27,7 +21,6 @@ public class Duke {
                 break;
             }
 
-            // If user types "list", display all tasks
             if (userInput.equalsIgnoreCase("list")) {
                 System.out.println("____________________________________________________________");
                 System.out.println("Here are the tasks in your list:");
@@ -42,7 +35,6 @@ public class Duke {
                 continue;
             }
 
-            // If user types "mark", mark the task as done
             if (userInput.startsWith("mark ")) {
                 int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
                 if (taskIndex >= 0 && taskIndex < taskCount) {
@@ -55,9 +47,8 @@ public class Duke {
                 continue;
             }
 
-            // If user types "unmark", mark the task as not done
             if (userInput.startsWith("unmark ")) {
-                int taskIndex = Integer.parseInt(userInput.substring(7)) - 1;  // Fixed substring index
+                int taskIndex = Integer.parseInt(userInput.substring(7)) - 1;
                 if (taskIndex >= 0 && taskIndex < taskCount) {
                     tasks[taskIndex].markAsNotDone();
                     System.out.println("____________________________________________________________");
@@ -68,13 +59,25 @@ public class Duke {
                 continue;
             }
 
-            // Add the task to the list
-            tasks[taskCount] = new Task(userInput);
-            taskCount++;
+            // Adding tasks based on type
+            if (userInput.startsWith("todo ")) {
+                tasks[taskCount] = new Task("T", userInput.substring(5), "");
+            } else if (userInput.startsWith("deadline ")) {
+                String[] parts = userInput.substring(9).split(" /by ", 2);
+                tasks[taskCount] = new Task("D", parts[0], parts.length > 1 ? "(by: " + parts[1] + ")" : "(by: Unknown deadline)");
+            } else if (userInput.startsWith("event ")) {
+                String[] parts = userInput.substring(6).split(" /from | /to ", 3);
+                tasks[taskCount] = new Task("E", parts[0], parts.length > 2 ? "(from: " + parts[1] + " to: " + parts[2] + ")" : "(time unknown)");
+            } else {
+                System.out.println("Invalid command. Try again.");
+                continue;
+            }
 
-            // Echo the input with confirmation
             System.out.println("____________________________________________________________");
-            System.out.println("added: " + userInput);
+            System.out.println("Got it. I've added this task:");
+            System.out.println("  " + tasks[taskCount]);
+            taskCount++;
+            System.out.println("Now you have " + taskCount + " tasks in the list.");
             System.out.println("____________________________________________________________");
         }
     }

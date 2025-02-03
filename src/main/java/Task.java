@@ -1,30 +1,30 @@
 public class Task {
-    protected String description;
-    protected boolean isDone;
+    private String description;
+    private boolean isDone;
+    private String type;
+    private String extraInfo;
 
-    // Constructor to initialize a task with a description
-    public Task(String description) {
+    public Task(String type, String description, String extraInfo) {
+        this.type = type;
         this.description = description;
-        this.isDone = false; // Default status is not done
+        this.extraInfo = extraInfo;
+        this.isDone = false;
     }
 
-    // Method to get the status icon (X if done, space if not)
     public String getStatusIcon() {
         return (isDone ? "[X]" : "[ ]");
     }
 
-    // Method to mark the task as done
     public void markAsDone() {
         this.isDone = true;
     }
 
-    // Method to mark the task as not done
     public void markAsNotDone() {
         this.isDone = false;
     }
 
-    // Method to print the task in the desired format
+    @Override
     public String toString() {
-        return getStatusIcon() + " " + description;
+        return "[" + type + "]" + getStatusIcon() + " " + description + (extraInfo.isEmpty() ? "" : " " + extraInfo);
     }
 }

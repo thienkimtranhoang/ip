@@ -61,13 +61,19 @@ public class Mimon {
 
             // Adding tasks based on type
             if (userInput.startsWith("todo ")) {
-                tasks[taskCount] = new Task("T", userInput.substring(5), "");
+                tasks[taskCount] = new Todo(userInput.substring(5));
             } else if (userInput.startsWith("deadline ")) {
                 String[] parts = userInput.substring(9).split(" /by ", 2);
-                tasks[taskCount] = new Task("D", parts[0], parts.length > 1 ? "(by: " + parts[1] + ")" : "(by: Unknown deadline)");
+                String by = (parts.length > 1) ? parts[1] : "Unknown deadline";
+                tasks[taskCount] = new Deadline(parts[0], by);
             } else if (userInput.startsWith("event ")) {
                 String[] parts = userInput.substring(6).split(" /from | /to ", 3);
-                tasks[taskCount] = new Task("E", parts[0], parts.length > 2 ? "(from: " + parts[1] + " to: " + parts[2] + ")" : "(time unknown)");
+                if (parts.length > 2) {
+                    tasks[taskCount] = new Event(parts[0], parts[1], parts[2]);
+                } else {
+                    System.out.println("Invalid event format. Use: event description /from START /to END");
+                    continue;
+                }
             } else {
                 System.out.println("Invalid command. Try again.");
                 continue;

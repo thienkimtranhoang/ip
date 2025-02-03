@@ -1,13 +1,9 @@
 public class Task {
-    private String description;
-    private boolean isDone;
-    private String type;
-    private String extraInfo;
+    protected String description;
+    protected boolean isDone;
 
-    public Task(String type, String description, String extraInfo) {
-        this.type = type;
+    public Task(String description) {
         this.description = description;
-        this.extraInfo = extraInfo;
         this.isDone = false;
     }
 
@@ -25,6 +21,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return "[" + type + "]" + getStatusIcon() + " " + description + (extraInfo.isEmpty() ? "" : " " + extraInfo);
+        return getStatusIcon() + " " + description;
     }
 }

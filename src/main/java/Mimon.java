@@ -18,34 +18,43 @@ public class Mimon {
                 break;
             }
 
-            processUserCommand(userInput);
+            try {
+                processUserCommand(userInput);
+            } catch (MimonException e) {
+                System.out.println(DASHED_LINE);
+                System.out.println("Hold on! " + e.getMessage());
+                System.out.println(DASHED_LINE);
+            }
         }
     }
 
-    /**
-     * Processes user input and executes corresponding commands.
-     */
-    private static void processUserCommand(String userInput) {
+    private static void processUserCommand(String userInput) throws MimonException {
         if (userInput.equalsIgnoreCase("list")) {
             listTasks();
         } else if (userInput.startsWith("mark ")) {
             markTask(userInput, true);
         } else if (userInput.startsWith("unmark ")) {
             markTask(userInput, false);
-        } else if (userInput.startsWith("todo ")) {
-            addTodoTask(userInput.substring(5));
-        } else if (userInput.startsWith("deadline ")) {
-            addDeadlineTask(userInput.substring(9));
-        } else if (userInput.startsWith("event ")) {
-            addEventTask(userInput.substring(6));
+        } else if (userInput.startsWith("todo")) {
+            if (userInput.trim().equals("todo")) {
+                throw new MimonException("The description of a todo must have some information.");
+            }
+            addTodoTask(userInput.substring(5).trim());
+        } else if (userInput.startsWith("deadline")) {
+            if (userInput.trim().equals("deadline")) {
+                throw new MimonException("The description of a deadline should be meaningful.");
+            }
+            addDeadlineTask(userInput.substring(9).trim());
+        } else if (userInput.startsWith("event")) {
+            if (userInput.trim().equals("event")) {
+                throw new MimonException("The description of an event should include the date!.");
+            }
+            addEventTask(userInput.substring(6).trim());
         } else {
-            System.out.println("Invalid command. Try again.");
+            throw new MimonException("I don't recognize that command. Please enter a valid one.");
         }
     }
 
-    /**
-     * Prints the welcome message when the application starts.
-     */
     private static void printWelcomeMessage() {
         System.out.println(DASHED_LINE);
         System.out.println("Hello! I'm Mimon");
@@ -53,18 +62,12 @@ public class Mimon {
         System.out.println(DASHED_LINE);
     }
 
-    /**
-     * Prints the exit message when the user quits the application.
-     */
     private static void printExitMessage() {
         System.out.println(DASHED_LINE);
         System.out.println("Bye. Hope to see you again soon!");
         System.out.println(DASHED_LINE);
     }
 
-    /**
-     * Lists all tasks stored in the task array.
-     */
     private static void listTasks() {
         System.out.println(DASHED_LINE);
         System.out.println("Here are the tasks in your list:");
@@ -78,12 +81,7 @@ public class Mimon {
         System.out.println(DASHED_LINE);
     }
 
-    /**
-     * Marks or unmarks a task as done or not done.
-     * @param userInput The user command specifying which task to mark/unmark.
-     * @param isDone Boolean flag indicating whether to mark or unmark the task.
-     */
-    private static void markTask(String userInput, boolean isDone) {
+    private static void markTask(String userInput, boolean isDone) throws MimonException {
         try {
             int taskIndex = Integer.parseInt(userInput.split(" ")[1]) - 1;
             if (taskIndex >= 0 && taskIndex < taskCount) {
@@ -99,51 +97,33 @@ public class Mimon {
                 System.out.println("  " + tasks[taskIndex]);
                 System.out.println(DASHED_LINE);
             } else {
-                System.out.println("Invalid task number.");
+                throw new MimonException("Invalid task number. Please enter a valid task number to mark or unmark.");
             }
         } catch (NumberFormatException e) {
-            System.out.println("Invalid command format. Use: mark/unmark <task_number>");
+            throw new MimonException("Invalid command format. Use: mark/unmark <task_number>");
         }
     }
 
-    /**
-     * Adds a new To-Do task to the task list.
-     * @param description The description of the to-do task.
-     */
     private static void addTodoTask(String description) {
         addTask(new Todo(description));
     }
 
-    /**
-     * Adds a new Deadline task to the task list.
-     * @param input The user input containing the task description and due date.
-     */
-    private static void addDeadlineTask(String input) {
+    private static void addDeadlineTask(String input) throws MimonException {
         String[] parts = input.split(" /by ", 2);
         if (parts.length < 2) {
-            System.out.println("Invalid deadline format. Use: deadline description /by DATE");
-            return;
+            throw new MimonException("Invalid deadline format. Use: deadline description /by DATE");
         }
         addTask(new Deadline(parts[0], parts[1]));
     }
 
-    /**
-     * Adds a new Event task to the task list.
-     * @param input The user input containing the event description, start, and end times.
-     */
-    private static void addEventTask(String input) {
+    private static void addEventTask(String input) throws MimonException {
         String[] parts = input.split(" /from | /to ", 3);
         if (parts.length < 3) {
-            System.out.println("Invalid event format. Use: event description /from START /to END");
-            return;
+            throw new MimonException("Invalid event format. Use: event description /from START /to END");
         }
         addTask(new Event(parts[0], parts[1], parts[2]));
     }
 
-    /**
-     * Adds a new task to the task list.
-     * @param task The task object to be added.
-     */
     private static void addTask(Task task) {
         if (taskCount >= MAX_TASKS) {
             System.out.println("Task list is full! Cannot add more tasks.");

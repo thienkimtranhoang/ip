@@ -3,15 +3,18 @@ import tasks.Task;
 import tasks.Todo;
 import tasks.Deadline;
 import tasks.Event;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Mimon {
+    private static final String FILE_PATH = "./data/mimon.txt";
     public static final String DASHED_LINE = "____________________________________________________________";
     private static ArrayList<Task> tasks = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        loadTasksFromFile();
         printWelcomeMessage();
 
         while (true) {
@@ -24,6 +27,7 @@ public class Mimon {
 
             try {
                 processUserCommand(userInput);
+                saveTasksToFile();
             } catch (MimonException e) {
                 System.out.println(DASHED_LINE);
                 System.out.println("Hold on! " + e.getMessage());
@@ -155,5 +159,46 @@ public class Mimon {
         System.out.println("  " + task);
         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
         System.out.println(DASHED_LINE);
+    }
+
+    private static void saveTasksToFile() {
+        File file = new File(FILE_PATH);
+
+        try {
+            // Ensure directory exists
+            // file.getParentFile().mkdirs();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+            for (Task task : tasks) {
+                String taskLine = task.toFileFormat();
+                System.out.println("Saving: " + taskLine); // Debug print
+                writer.write(taskLine);
+                writer.newLine();
+            }
+
+            writer.close();
+            System.out.println("Tasks successfully saved to file.");
+        } catch (IOException e) {
+            System.out.println("Error saving tasks to file: " + e.getMessage());
+        }
+    }
+
+    private static void loadTasksFromFile() {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            return;
+        }
+        try (Scanner fileScanner = new Scanner(file)) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                Task task = Task.fromFileFormat(line);
+                if (task != null) {
+                    tasks.add(task);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading tasks from file.");
+        }
     }
 }

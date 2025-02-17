@@ -3,13 +3,12 @@ import tasks.Task;
 import tasks.Todo;
 import tasks.Deadline;
 import tasks.Event;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Mimon {
-    private static final int MAX_TASKS = 100;
     public static final String DASHED_LINE = "____________________________________________________________";
-    private static Task[] tasks = new Task[MAX_TASKS];
-    private static int taskCount = 0;
+    private static ArrayList<Task> tasks = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -40,6 +39,8 @@ public class Mimon {
             markTask(userInput, true);
         } else if (userInput.startsWith("unmark ")) {
             markTask(userInput, false);
+        } else if (userInput.startsWith("delete ")) {
+            deleteTask(userInput);
         } else if (userInput.startsWith("todo")) {
             if (userInput.trim().equals("todo")) {
                 throw new MimonException("The description of a todo must have some information.");
@@ -76,11 +77,11 @@ public class Mimon {
     private static void listTasks() {
         System.out.println(DASHED_LINE);
         System.out.println("Here are the tasks in your list:");
-        if (taskCount == 0) {
+        if (tasks.isEmpty()) {
             System.out.println("No tasks added yet.");
         } else {
-            for (int i = 0; i < taskCount; i++) {
-                System.out.println((i + 1) + ". " + tasks[i]);
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.println((i + 1) + ". " + tasks.get(i));
             }
         }
         System.out.println(DASHED_LINE);
@@ -89,23 +90,41 @@ public class Mimon {
     private static void markTask(String userInput, boolean isDone) throws MimonException {
         try {
             int taskIndex = Integer.parseInt(userInput.split(" ")[1]) - 1;
-            if (taskIndex >= 0 && taskIndex < taskCount) {
+            if (taskIndex >= 0 && taskIndex < tasks.size()) {
                 if (isDone) {
-                    tasks[taskIndex].markAsDone();
+                    tasks.get(taskIndex).markAsDone();
                     System.out.println(DASHED_LINE);
                     System.out.println("Nice! I've marked this task as done:");
                 } else {
-                    tasks[taskIndex].markAsNotDone();
+                    tasks.get(taskIndex).markAsNotDone();
                     System.out.println(DASHED_LINE);
                     System.out.println("OK, I've marked this task as not done yet:");
                 }
-                System.out.println("  " + tasks[taskIndex]);
+                System.out.println("  " + tasks.get(taskIndex));
                 System.out.println(DASHED_LINE);
             } else {
                 throw new MimonException("Invalid task number. Please enter a valid task number to mark or unmark.");
             }
         } catch (NumberFormatException e) {
             throw new MimonException("Invalid command format. Use: mark/unmark <task_number>");
+        }
+    }
+
+    private static void deleteTask(String userInput) throws MimonException {
+        try {
+            int taskIndex = Integer.parseInt(userInput.split(" ")[1]) - 1;
+            if (taskIndex >= 0 && taskIndex < tasks.size()) {
+                Task removedTask = tasks.remove(taskIndex);
+                System.out.println(DASHED_LINE);
+                System.out.println("Noted. I've removed this task:");
+                System.out.println("  " + removedTask);
+                System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                System.out.println(DASHED_LINE);
+            } else {
+                throw new MimonException("Invalid task number. Please enter a valid task number to delete.");
+            }
+        } catch (NumberFormatException e) {
+            throw new MimonException("Invalid command format. Use: delete <task_number>");
         }
     }
 
@@ -130,15 +149,11 @@ public class Mimon {
     }
 
     private static void addTask(Task task) {
-        if (taskCount >= MAX_TASKS) {
-            System.out.println("Task list is full! Cannot add more tasks.");
-            return;
-        }
-        tasks[taskCount++] = task;
+        tasks.add(task);
         System.out.println(DASHED_LINE);
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
+        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
         System.out.println(DASHED_LINE);
     }
 }

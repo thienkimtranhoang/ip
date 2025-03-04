@@ -37,7 +37,7 @@ public class Mimon {
             }
         }
     }
-    
+
     public static void main(String[] args) {
         new Mimon("./data/mimon.txt").run();
     }

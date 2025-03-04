@@ -78,6 +78,12 @@ public class Ui {
         printDashedLine();
     }
 
+    public void showMessage(String message) {
+        printDashedLine();
+        System.out.println(message);
+        printDashedLine();
+    }
+
     public void printDashedLine() {
         System.out.println(DASHED_LINE);
     }

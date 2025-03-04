@@ -6,6 +6,7 @@ public class Parser {
     public static Command parse(String userInput) throws MimonException {
         String[] inputParts = userInput.trim().split(" ", 2);
         String commandType = inputParts[0].toLowerCase();
+        String arguments = inputParts.length > 1 ? inputParts[1].trim() : "";
 
         try {
             switch (commandType) {
@@ -28,6 +29,11 @@ public class Parser {
                 return parseMarkCommand(inputParts[1], false);
             case "delete":
                 return parseDeleteCommand(inputParts[1]);
+            case "list-date":
+                if (arguments.isEmpty()) {
+                    throw new MimonException("Date is required for list-date command");
+                }
+                return new ListByDateCommand(arguments);
             default:
                 throw new MimonException("I don't recognize that command. Please enter a valid one.");
             }

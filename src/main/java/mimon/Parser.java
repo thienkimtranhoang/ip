@@ -34,6 +34,11 @@ public class Parser {
                     throw new MimonException("Date is required for list-date command");
                 }
                 return new ListByDateCommand(arguments);
+            case "find":
+                if (inputParts.length < 2) {
+                    throw new MimonException("Find command requires a keyword");
+                }
+                return new FindCommand(inputParts[1]);
             default:
                 throw new MimonException("I don't recognize that command. Please enter a valid one.");
             }

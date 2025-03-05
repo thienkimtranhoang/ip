@@ -6,13 +6,27 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Handles loading and saving of tasks to a file.
+ */
 public class Storage {
     private final String filePath;
 
+    /**
+     * Constructs a Storage object with the specified file path.
+     *
+     * @param filePath The file path where tasks are stored.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Loads tasks from the storage file.
+     *
+     * @return A list of tasks loaded from the file.
+     * @throws MimonException If there is an error reading the file.
+     */
     public ArrayList<Task> load() throws MimonException {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
@@ -40,7 +54,12 @@ public class Storage {
             throw new MimonException("Error loading tasks from file: " + e.getMessage());
         }
     }
-
+    /**
+     * Saves the list of tasks to the storage file.
+     *
+     * @param tasks The list of tasks to be saved.
+     * @throws MimonException If there is an error writing to the file.
+     */
     public void saveTasks(ArrayList<Task> tasks) throws MimonException {
         File file = new File(filePath);
 

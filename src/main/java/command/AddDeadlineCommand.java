@@ -18,10 +18,13 @@ public class AddDeadlineCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MimonException {
-        Task newTask = new Deadline(description, deadline);
-        tasks.addTask(newTask);
-        ui.displayTaskAdded(newTask, tasks.size());
-        storage.saveTasks(tasks.getTasks());
+        try {
+            Task newTask = new Deadline(description, deadline);
+            tasks.addTask(newTask);
+            ui.displayTaskAdded(newTask, tasks.size());
+            storage.saveTasks(tasks.getTasks());
+        } catch (Deadline.DeadlineParseException e) {
+            throw new MimonException(e.getMessage());
+        }
     }
 }
-

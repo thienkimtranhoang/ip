@@ -20,9 +20,14 @@ public class AddEventCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MimonException {
-        Task newTask = new Event(description, start, end);
-        tasks.addTask(newTask);
-        ui.displayTaskAdded(newTask, tasks.size());
-        storage.saveTasks(tasks.getTasks());
+        try {
+            Task newTask = new Event(description, start, end);
+            tasks.addTask(newTask);
+            ui.displayTaskAdded(newTask, tasks.size());
+            storage.saveTasks(tasks.getTasks());
+        } catch (Event.EventParseException e) {
+            // Convert the specific Event parsing exception to a MimonException
+            throw new MimonException("Invalid event format: " + e.getMessage());
+        }
     }
 }

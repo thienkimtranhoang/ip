@@ -1,6 +1,7 @@
 package mimon;
 
 import tasks.Task;
+import tasks.Deadline;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -23,9 +24,15 @@ public class Storage {
         try (Scanner fileScanner = new Scanner(file)) {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
-                Task task = Task.fromFileFormat(line);
-                if (task != null) {
-                    tasks.add(task);
+                try {
+                    Task task = Task.fromFileFormat(line);
+                    if (task != null) {
+                        tasks.add(task);
+                    }
+                } catch (Deadline.DeadlineParseException e) {
+                    // Log the error or handle it as needed
+                    // For now, we'll skip the task that can't be parsed
+                    System.err.println("Skipping invalid task: " + line + " - " + e.getMessage());
                 }
             }
             return tasks;
@@ -58,4 +65,3 @@ public class Storage {
         }
     }
 }
-

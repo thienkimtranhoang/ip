@@ -5,6 +5,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Represents a deadline task in the task management system.
+ * A deadline task has a description and a specific date and time by which
+ * the task should be completed.
+ *
+ * Supports flexible date and time parsing with multiple input formats.
+ */
 public class Deadline extends Task {
     private LocalDateTime by;
 
@@ -23,13 +30,23 @@ public class Deadline extends Task {
     private static final DateTimeFormatter OUTPUT_FORMATTER =
             DateTimeFormatter.ofPattern("MMM dd yyyy");
 
-    // Custom exception for deadline parsing
+    /**
+     * Custom exception thrown when there is an error parsing a deadline.
+     * Provides detailed information about parsing failures.
+     */
     public static class DeadlineParseException extends Exception {
         public DeadlineParseException(String message) {
             super(message);
         }
     }
 
+    /**
+     * Constructs a Deadline task with a description and deadline.
+     *
+     * @param description The description of the deadline task
+     * @param byString The deadline date and time as a string
+     * @throws DeadlineParseException If the deadline cannot be parsed
+     */
     public Deadline(String description, String byString) throws DeadlineParseException {
         super(description);
         try {
@@ -71,55 +88,36 @@ public class Deadline extends Task {
         }
     }
 
+    /**
+     * Returns a string representation of the deadline task.
+     *
+     * @return A formatted string showing the task type, description, and deadline
+     */
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " +
                 OUTPUT_FORMATTER.format(by) + ")";
     }
 
+    /**
+     * Converts the deadline task to a file-compatible format.
+     *
+     * @return A string representation suitable for file storage
+     */
     @Override
     public String toFileFormat() {
         return "D | " + (isDone ? "1" : "0") + " | " +
                 description + " | " + by.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
-    public static Deadline fromFileFormat(String[] parts) throws DeadlineParseException {
-        // Print out debugging information
-        System.out.println("Debug: Parsing Deadline");
-        System.out.println("Total parts: " + parts.length);
-        for (int i = 0; i < parts.length; i++) {
-            System.out.println("Part " + i + ": [" + parts[i] + "]");
-        }
-
-        try {
-            // Handle cases where deadline might be at different indices
-            String deadlineString = parts.length > 3 ? parts[3] : parts[2];
-
-            System.out.println("Attempting to parse deadline: [" + deadlineString + "]");
-
-            Deadline deadline = new Deadline(parts[2], deadlineString);
-            if (parts[1].equals("1")) {
-                deadline.markAsDone();
-            }
-            return deadline;
-        } catch (Exception e) {
-            // Print full stack trace for more detailed error information
-            e.printStackTrace();
-            throw new DeadlineParseException("Failed to parse deadline: " + e.getMessage());
-        }
-    }
-
-    // Getters for date-related operations
-    public LocalDateTime getDateTime() {
-        return by;
-    }
-    // New method to check if the deadline is on a specific date
+    /**
+     * Checks if the deadline is on a specific date.
+     *
+     * @param date The date to check
+     * @return true if the deadline is on the specified date, false otherwise
+     */
     public boolean isOnDate(LocalDate date) {
         return this.by.toLocalDate().isEqual(date);
     }
 
-    // Method to get the date of the deadline
-    public LocalDate getDate() {
-        return this.by.toLocalDate();
-    }
 }

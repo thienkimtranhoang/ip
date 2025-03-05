@@ -2,7 +2,17 @@ package mimon;
 
 import command.*;
 
+/**
+ * Parses user input and returns the corresponding command.
+ */
 public class Parser {
+    /**
+     * Parses the user input and returns the appropriate Command object.
+     *
+     * @param userInput The user's input string.
+     * @return The corresponding Command object.
+     * @throws MimonException If the input format is invalid.
+     */
     public static Command parse(String userInput) throws MimonException {
         String[] inputParts = userInput.trim().split(" ", 2);
         String commandType = inputParts[0].toLowerCase();

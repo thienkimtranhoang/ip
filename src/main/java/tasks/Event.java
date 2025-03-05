@@ -5,6 +5,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Represents an event task in the task management system.
+ * An event task has a description with a start and end date and time.
+ *
+ * Supports flexible date and time parsing with multiple input formats.
+ */
 public class Event extends Task {
     private LocalDateTime fromDateTime;
     private LocalDateTime toDateTime;
@@ -24,13 +30,24 @@ public class Event extends Task {
     private static final DateTimeFormatter OUTPUT_FORMATTER =
             DateTimeFormatter.ofPattern("MMM dd yyyy");
 
-    // Custom exception for event parsing
+    /**
+     * Custom exception thrown when there is an error parsing an event.
+     * Provides detailed information about parsing failures.
+     */
     public static class EventParseException extends Exception {
         public EventParseException(String message) {
             super(message);
         }
     }
 
+    /**
+     * Constructs an Event task with a description, start, and end times.
+     *
+     * @param description The description of the event task
+     * @param from The start date and time as a string
+     * @param to The end date and time as a string
+     * @throws EventParseException If the event details cannot be parsed
+     */
     public Event(String description, String from, String to) throws EventParseException {
         super(description);
         try {
@@ -70,6 +87,11 @@ public class Event extends Task {
         }
     }
 
+    /**
+     * Returns a string representation of the event task.
+     *
+     * @return A formatted string showing the task type, description, start, and end times
+     */
     @Override
     public String toString() {
         return "[E]" + super.toString() +
@@ -77,6 +99,11 @@ public class Event extends Task {
                 " to: " + OUTPUT_FORMATTER.format(toDateTime) + ")";
     }
 
+    /**
+     * Converts the event task to a file-compatible format.
+     *
+     * @return A string representation suitable for file storage
+     */
     @Override
     public String toFileFormat() {
         return "E | " + (isDone ? "1" : "0") + " | " +
@@ -85,32 +112,12 @@ public class Event extends Task {
                 toDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
-    public static Event fromFileFormat(String[] parts) throws EventParseException {
-        try {
-            // Handle cases where event details might be at different indices
-            String fromString = parts.length > 3 ? parts[3] : parts[2];
-            String toString = parts.length > 4 ? parts[4] : parts[3];
-
-            Event event = new Event(parts[2], fromString, toString);
-            if (parts[1].equals("1")) {
-                event.markAsDone();
-            }
-            return event;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new EventParseException("Failed to parse event: " + e.getMessage());
-        }
-    }
-
-    // Getters for date-related operations
-    public LocalDateTime getFromDateTime() {
-        return fromDateTime;
-    }
-
-    public LocalDateTime getToDateTime() {
-        return toDateTime;
-    }
-
+    /**
+     * Checks if the event occurs on a specific date.
+     *
+     * @param date The date to check
+     * @return true if the event is on or spans the specified date, false otherwise
+     */
     public boolean isOnDate(LocalDate date) {
         return (fromDateTime.toLocalDate().isEqual(date) ||
                 toDateTime.toLocalDate().isEqual(date) ||

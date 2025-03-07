@@ -61,7 +61,6 @@ Got it. I've added this task:
  [E][ ] Team meeting (from: 2025-03-10 10:00 to: 2025-03-10 12:00) 
  Now you have 1 tasks in the list.
 ```
----
 ## Listing Tasks
 
 You can list all the tasks you've added to Mimon. This feature helps you see all your tasks and their current status (completed or not).
@@ -71,7 +70,7 @@ You can list all the tasks you've added to Mimon. This feature helps you see all
 `list`
 
 ### Expected Outcome:
-All tasks will be listed with their status and task type. For example: 
+All tasks will be listed with their status and task type.For example:
 ```
 Here are the tasks in your list:
 [T][ ] Buy groceries
@@ -115,23 +114,6 @@ Example: `unmark <task_number>`
 The task will be marked as not completed, and the task status will change back to **not done**.
 
 ```OK, I've marked this task as not done yet: [T][ ] Buy groceries```
-
----
-
-## Exiting the Program
-
-When you're done, you can exit Mimon with a simple command.
-
-### Usage:
-
-`bye`
-
-### Expected Outcome:
-Mimon will say goodbye and close the program.
-
-```Bye. Hope to see you again soon!```
-
----
 
 ---
 
@@ -194,5 +176,19 @@ Example: `delete 1`
 The task at position **1** will be deleted from the list.
 
 ```Noted. I've removed this task: [T][ ] Buy groceries Now you have 2 tasks in the list.```
+
+---
+## Exiting the Program
+
+When you're done, you can exit Mimon with a simple command.
+
+### Usage:
+
+`bye`
+
+### Expected Outcome:
+Mimon will say goodbye and close the program.
+
+```Bye. Hope to see you again soon!```
 
 ---
